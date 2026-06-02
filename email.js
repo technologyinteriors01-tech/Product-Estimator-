@@ -3,10 +3,10 @@
 */
 
 const TI_EMAIL_CONFIG = {
-  publicKey: "WH5XhjXbbdOELCAgP",
-  serviceId: "service_lou1nh3",
-  templateId: "template_g5neoku",
-  recipientEmail: "saradustova@gmail.com",
+  publicKey: "UdNSae-OZciQffGiv",
+  serviceId: "service_9674ric",
+  templateId: "template_jw4qtkt",
+  recipientEmail: "technologyinteriors01@gmail.com",
   companyName: "Technology Interiors"
 };
 
