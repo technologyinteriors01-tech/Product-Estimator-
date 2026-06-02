@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ======================================================
+       BASIC PAGE SETUP
+       ====================================================== -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Technology Interiors Product Finder</title>
+
+  <!-- ======================================================
+       GLOBAL STYLES
+       ====================================================== -->
+  <style>
+    :root {
+      --bg: #05090b;
+      --ink: #f4f1e8;
+      --muted: #a8b8bc;
+      --teal: #6f9fa8;
+      --teal-dark: #375b65;
+      --line: rgba(133,169,177,.23);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Inter, Arial, sans-serif;
+      background:
+        linear-gradient(rgba(111,159,168,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(111,159,168,.055) 1px, transparent 1px),
+        radial-gradient(circle at 16% 8%, rgba(111,159,168,.18), transparent 28%),
+        #05090b;
+      background-size: 96px 96px, 96px 96px, auto;
+    }
+
+    .mono {
+      font-family: "Courier New", monospace;
+      text-transform: uppercase;
+      letter-spacing: -.04em;
+    }
+
+    .hidden { display: none !important; }
+    .muted { color: var(--muted); line-height: 1.55; }
+
+    /* Header / Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: grid;
+      grid-template-columns: 260px 1fr auto;
+      gap: 24px;
+      align-items: center;
+      padding: 16px 30px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(5,9,11,.88);
+      backdrop-filter: blur(16px);
+    }
+
+    header img {
+      height: 44px;
+      max-width: 230px;
+      object-fit: contain;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 34px;
+      font-size: 12px;
+    }
+
+    nav a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    /* Global pricing disclaimer */
+    .disclaimer {
+      margin: 18px 30px 0;
+      border: 1px solid var(--line);
+      background: rgba(15,29,34,.76);
+      padding: 14px 18px;
+      color: #d8edf1;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .page {
+      padding: 0 30px 50px;
+      max-width: 1500px;
+      margin: auto;
+    }
+
+    button {
+      border: 1px solid rgba(111,159,168,.55);
+      background: linear-gradient(135deg, #8eb9c1, #4f7f8a);
+      color: #061114;
+      padding: 14px 18px;
+      font-weight: 900;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    button.secondary {
+      background: rgba(255,255,255,.025);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    /* Landing / Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      min-height: 78vh;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-copy {
+      padding: 72px 34px 52px 62px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hero h1 {
+      font-size: clamp(62px, 10vw, 156px);
+      line-height: .78;
+      letter-spacing: -.09em;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .hero h1 span {
+      color: var(--teal);
+      display: block;
+    }
+
+    .hero p {
+      max-width: 700px;
+      color: #dce6e8;
+      line-height: 1.55;
+    }
+
+    .hero-media {
+      background:
+        linear-gradient(180deg, rgba(5,9,11,.05), rgba(5,9,11,.75)),
+        url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1600&auto=format&fit=crop') center/cover;
+      border-left: 1px solid var(--line);
+      min-height: 650px;
+    }
+
+    /* Section headers */
+    .section-head {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr auto;
+      gap: 28px;
+      align-items: end;
+      padding: 62px 0 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head h2 {
+      font-size: clamp(38px, 6vw, 92px);
+      line-height: .86;
+      letter-spacing: -.075em;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* Cards / Package Results */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .card,
+    .section {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(15,26,31,.86), rgba(6,11,14,.94));
+      box-shadow: 0 22px 70px rgba(0,0,0,.28);
+    }
+
+    .card img {
+      width: 100%;
+      height: 235px;
+      object-fit: cover;
+      filter: saturate(.72) contrast(1.08);
+    }
+
+    .pad { padding: 22px; }
+
+    .badge {
+      display: inline-block;
+      background: rgba(111,159,168,.9);
+      color: #061114;
+      padding: 8px 11px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .card h3 {
+      font-size: 27px;
+      letter-spacing: -.045em;
+      margin: 16px 0 8px;
+    }
+
+    .card p,
+    .card li {
+      font-size: 13px;
+      color: #cbd7da;
+      line-height: 1.55;
+    }
+
+    .price {
+      font-size: 34px;
+      color: var(--teal);
+      font-weight: 900;
+      letter-spacing: -.06em;
+    }
+
+    /* Questionnaire */
+    .question {
+      max-width: 980px;
+      margin: 54px auto;
+    }
+
+    .progress {
+      height: 8px;
+      background: rgba(255,255,255,.08);
+      margin: 18px 0 26px;
+    }
+
+    .bar {
+      height: 100%;
+      background: var(--teal);
+      width: 0;
+      transition: .25s;
+    }
+
+    .options,
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .option {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
+      padding: 18px;
+      cursor: pointer;
+      min-height: 92px;
+    }
+
+    .option.active {
+      border-color: var(--teal);
+      background: rgba(111,159,168,.16);
+    }
+
+    .option strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .option span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    /* Loading screen */
+    .loading {
+      min-height: 70vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 78px;
+      height: 78px;
+      border: 8px solid rgba(255,255,255,.1);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Package Builder */
+    .builder {
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 24px;
+      padding-top: 24px;
+    }
+
+    .main {
+      display: grid;
+      gap: 20px;
+    }
+
+    .section {
+      padding: 24px;
+    }
+
+    .section h3 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      letter-spacing: -.06em;
+      font-weight: 500;
+    }
+
+    .warning {
+      border-left: 4px solid var(--teal);
+      background: rgba(111,159,168,.12);
+      padding: 14px;
+      color: #dceef1;
+      margin: 16px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .ptype {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
+      cursor: pointer;
+      min-height: 250px;
+    }
+
+    .ptype.active {
+      border-color: var(--teal);
+      background: rgba(111,159,168,.15);
+    }
+
+    .ptype img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      filter: saturate(.75);
+    }
+
+    .ptype div { padding: 14px; }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    label {
+      display: block;
+      color: #d8e4e7;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    select,
+    input,
+    textarea {
+      width: 100%;
+      margin-top: 8px;
+      background: #091014;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      padding: 13px;
+      border-radius: 0;
+      font: inherit;
+    }
+
+    select option { color: #111; }
+    textarea { min-height: 116px; }
+
+    /* Visual screen-size preview */
+    .screen-visuals {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: end;
+      gap: 12px;
+      margin-top: 18px;
+      min-height: 210px;
+      border: 1px solid var(--line);
+      padding: 18px;
+      background: rgba(255,255,255,.018);
+    }
+
+    .screen-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 10px;
+      border: 1px solid transparent;
+      transition: all .18s ease;
+    }
+
+    .screen-box:hover {
+      border-color: rgba(111,159,168,.55);
+      background: rgba(111,159,168,.08);
+      transform: translateY(-2px);
+    }
+
+    .screen-box.active {
+      border-color: var(--teal);
+      background: rgba(111,159,168,.18);
+      color: var(--ink);
+    }
+
+    .screen-box.active b {
+      color: var(--teal);
+      font-size: 14px;
+    }
+
+    .screen {
+      border: 2px solid rgba(244,241,232,.9);
+      background: linear-gradient(135deg, rgba(111,159,168,.42), rgba(0,0,0,.8));
+      box-shadow: 0 12px 28px rgba(0,0,0,.35);
+    }
+
+    .screen.active {
+      border-color: #ffffff;
+      background: linear-gradient(135deg, rgba(111,159,168,.95), rgba(244,241,232,.35));
+      box-shadow:
+        0 0 0 5px rgba(111,159,168,.45),
+        0 0 0 9px rgba(244,241,232,.12),
+        0 22px 42px rgba(0,0,0,.55);
+    }
+
+    /* Live pricing sidebar */
+    .line {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 0;
+    }
+
+    .line small {
+      color: var(--muted);
+      display: block;
+      margin-top: 3px;
+    }
+
+    .sticky {
+      position: sticky;
+      top: 90px;
+      align-self: start;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(16,29,35,.96), rgba(6,11,14,.98));
+      padding: 24px;
+    }
+
+    .total {
+      font-size: 38px;
+      color: var(--teal);
+      font-weight: 900;
+      letter-spacing: -.06em;
+    }
+
+    /* Review and submit */
+    .review-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .email-note {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      background: rgba(255,255,255,.025);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th { background: rgba(111,159,168,.12); }
+
+    /* Mobile */
+    @media (max-width: 1000px) {
+      header { grid-template-columns: 1fr auto; }
+      nav { display: none; }
+      .hero,
+      .builder,
+      .review-grid,
+      .section-head {
+        grid-template-columns: 1fr;
+      }
+      .hero-copy { padding: 48px 20px; }
+      .hero-media {
+        min-height: 350px;
+        border-left: 0;
+      }
+      .cards,
+      .options,
+      .option-grid,
+      .type-grid,
+      .config-grid {
+        grid-template-columns: 1fr;
+      }
+      .screen-visuals { grid-template-columns: repeat(3, 1fr); }
+      .sticky { position: static; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======================================================
+       HEADER
+       ====================================================== -->
+  <header>
+    <img src="data:image/webp;base64,UklGRowEAABXRUJQVlA4WAoAAAAQAAAA/wAALgAAQUxQSL8CAAABoFVrb9jK+iEYgiEYgiAEgiAEghgEQiAEgiAYQiAYwv9QW0570pyZufchIiYA/y+882Pll2L85Sl/ecofIzadATl8sgBQiyuymUbMLEPNTEdipgCyRdcMwMzyXLHoml+SWlwgZhIxsxnlzzFOC5TTglQ56RDSIyQFTpI6MNIBZbwVgKRMGeOtAPnkpMFIi5CcUN5Lu8L4Oa2EMmfPawpnT+Dghyl/knq3kad3i5DcLJ7h5Onh7Q2sKbKS9CDJcomRzceVJECyeljfpPxRQycN/RdMOymYvGonuUeMdARJylWO4Egw+Rblk5CdpN7VdhlvySbzVacFA6mSrdzUaeP9C8zKVbM95EbWdEPK2fO5YCF53MLmUQXqzHJ31eMF9ZrmwRA2kusdOKMGYHV3b2R1911wd4JZXuMIxlBJlhvqOimY/g7+WbmR5/bz1Ib+lfSKXcLlPRB2O6eMl9Eq4fJyyngdmYz3r5M4L9g562+CDQqn08ukY+FsA07OfhnsV5T2YfAefMZwCerMCixfLm0XoBwfllov2RlxxUXJzogvALD411EzGQFJJhOe7U08+v+IbK5Q9yN1NldsHi3Iu48V6sEF2FwBOby/F0B9fAgA82B5Lk6DkazpxWlwRiU1Bg3GaIHTUBhsGcZgSzBG5fmwpoGamZFuZpaV3GwoMJ7Wb7SOsVl3azQY3fqkwOk2zk/Hd7KmXpc0vBop4wKjo+8BR987hn5vl37CPd8LdrKmi4LeMfb1MmdfcDBoDwhO1vJJNb2rAqUFmB5QqmQ7L5Fx6Ugj2yLAZUbytDUBgAxJeUBIleSckjaWDpKTLXJavw0gJ+kZgNpwe0hI9YrcGLQesJK0njCae0gH2RbAGWx4Lpsr1LcXJHfXnrt2UA4fK9S3FxR3X7G5Asvh/UMAdcXr4u4LNh8f5cE8+r9//+sLAFZQOCCmAQAAMA0AnQEqAAEvAD7FUJ9Mp6Sioja8vSDwGIllAMfdBe5YR/7IB1a13iYyjYkHV6Gzh6Cd/vRezebE76RJ9gfxZNtfiVlYxEjlE75xw48WFBIxz7ulrW5ICJzSeEdaQfsBgJGaVg05om9V6uLlfmVBfbxAAP74TpZl8KjAReWoUGNP8FUk+UehoPFNm0YKwx/sO5SUJsxWze6wX5KGb+abQ+nL/9/HFlJI+Gr/sisu8jHIE8UyAYWLgDF5XtBJW5BXxmn5b9MndQkYvacjrgVJrmg9bYM/4UoLZ9+urXomJdmjzxQAJE7f6jr3oFyuEvlMwdVQ/x3KRwP07WgKuggEMrn0DECDkQZyAkVbzBu55uo9nZG5l+uVVEFZJrTSzHw/Ev5ZEqDVjWYtpRnSSl8ZAMqySotaeJ/CA8ZDhUWDxH8z6LhF3ZX4CVUPoAgBOzqvfIsZfkthVS+jd6gxRf4WKj8ol/kL/irbx+jdSTUyB8L+BgCqqIXBVyrtrZqKkBy8NhoUJi1ZpNhTQMo3C4T3PaalUNnQ6M0Xk8Yu/YSO/eQKoAAAAAA=" alt="Technology Interiors" />
+    <nav class="mono">
+    </nav>
+  </header>
+
+  <!-- ======================================================
+       GLOBAL DISCLAIMER
+       ====================================================== -->
+  <div class="disclaimer mono">
+    <b>Important Disclaimer:</b> Pricing is an estimate only and uses the uploaded item list dated 06/01/2026 where matching items were available. We do not offer financing through this tool. Final prices may vary based on manufacturer pricing, site conditions, existing wiring, room preparation, and final design. A site visit is required for accurate quoting.
+  </div>
+
+  <!-- ======================================================
+       LANDING PAGE
+       ====================================================== -->
+  <section id="landing" class="page hero">
+    <div class="hero-copy">
+      <div>
+        <h1>FIND YOUR<br />PERFECT<br /><span>AV SYSTEM</span></h1>
+        <p class="mono">
+          Answer a few simple questions, get personalized recommendations, choose the product type, then configure brand, size, screen type, resolution, audio, site conditions, and add-ons.
+        </p>
+        <button onclick="go('quiz')">Start My Recommendation →</button>
+        <button class="secondary" onclick="showLoading()">Browse Packages</button>
+      </div>
+    </div>
+    <div class="hero-media"></div>
+  </section>
+
+  <!-- ======================================================
+       QUESTIONNAIRE
+       ====================================================== -->
+  <section id="quiz" class="page question hidden">
+    <p class="mono muted" id="qcount"></p>
+    <div class="progress"><div class="bar" id="qbar"></div></div>
+
+    <div class="section">
+      <h3 id="qtitle"></h3>
+      <div id="options" class="options"></div>
+
+      <div style="display:flex;justify-content:space-between;margin-top:24px">
+        <button class="secondary" onclick="backQuestion()">Back</button>
+        <button onclick="nextQuestion()">Continue →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       LOADING / RESULTS CALCULATION SCREEN
+       ====================================================== -->
+  <section id="loading" class="page loading hidden">
+    <div>
+      <div class="spinner"></div>
+      <h2 class="mono">Designing Your System...</h2>
+      <p class="muted" id="tip">Analyzing your room, product type, screen, audio, and site conditions.</p>
+      <div class="progress" style="max-width:460px;margin:24px auto"><div class="bar" style="width:100%"></div></div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       RESULTS DASHBOARD
+       ====================================================== -->
+  <section id="results" class="page hidden">
+    <div class="section-head">
+      <h2 id="resultHeadline">3 SYSTEMS DESIGNED FOR YOU</h2>
+      <p class="mono">
+        After choosing a package, the customer selects what product type they are looking for. Brand, size, screen type, and resolution then become specific to that choice.
+      </p>
+      <button class="secondary" onclick="go('compare')">Compare All 3</button>
+    </div>
+    <div class="cards" id="packageCards"></div>
+  </section>
+
+  <!-- ======================================================
+       PACKAGE BUILDER
+       ====================================================== -->
+  <section id="builderPage" class="page hidden">
+    <div class="section-head">
+      <h2 id="builderTitle">CUSTOMIZE PACKAGE</h2>
+      <p class="mono" id="builderWhy">Choose product type first. The rest of the builder changes based on that selection.</p>
+      <span class="badge" id="builderBadge">Best Overall</span>
+    </div>
+
+    <div class="builder" id="builder">
+      <main class="main">
+        <!-- Product type controls what fields appear next -->
+        <section class="section">
+          <h3>1. Choose Product Type</h3>
+          <p class="muted">This controls the brand, size, screen type, and resolution options shown next.</p>
+          <div id="productTypeGrid" class="type-grid"></div>
+        </section>
+
+        <!-- Dynamic product configuration -->
+        <section class="section">
+          <h3 id="configTitle">2. Configure Display</h3>
+          <p class="muted" id="configDescription"></p>
+          <div class="warning">
+            Prices shown are estimates. Current item-list prices are used where available; otherwise market placeholders remain until Technology Interiors verifies the final quote.
+          </div>
+          <div id="dynamicConfig" class="config-grid"></div>
+          <div id="screenVisuals" class="screen-visuals"></div>
+        </section>
+
+        <!-- Audio choices -->
+        <section class="section">
+          <h3>3. Audio / Music Casting</h3>
+          <p class="muted">Higher-end options are clearly labeled <b>(in-wall or in-ceiling)</b>.</p>
+          <div id="audioOptions" class="option-grid"></div>
+        </section>
+
+        <!-- Auto-added support items -->
+        <section class="section">
+          <h3>4. Supporting Items</h3>
+          <div id="requiredItems"></div>
+        </section>
+
+        <!-- Site conditions -->
+        <section class="section">
+          <h3>5. Site Conditions</h3>
+          <p class="muted">Help us estimate labor and preparation accurately.</p>
+          <div id="siteOptions" class="option-grid"></div>
+          <textarea id="siteNotes" placeholder="Other notes: room has a fireplace, everything should be hidden, unfinished utility closet nearby, etc."></textarea>
+        </section>
+
+        <!-- Optional upgrades -->
+        <section class="section">
+          <h3>6. Optional Upgrades</h3>
+          <div id="optionalItems" class="option-grid"></div>
+        </section>
+      </main>
+
+      <!-- Sticky live pricing sidebar -->
+      <aside class="sticky">
+        <p class="mono muted">Live Package Summary</p>
+        <div class="total" id="grandTotal">$0</div>
+        <p class="muted">Estimated total. Final price determined after site visit.</p>
+
+        <div class="line"><span>Display</span><b id="displayTotal"></b></div>
+        <div class="line"><span>Audio</span><b id="audioTotal"></b></div>
+        <div class="line"><span>Supporting Items</span><b id="supportTotal"></b></div>
+        <div class="line"><span>Optional Upgrades</span><b id="addonTotal"></b></div>
+        <div class="line"><span>Estimated Tax</span><b id="taxTotal"></b></div>
+
+        <br />
+        <button style="width:100%" onclick="go('review')">Review & Submit Package →</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       COMPARISON TABLE
+       ====================================================== -->
+  <section id="compare" class="page hidden">
+    <div class="section-head">
+      <h2>COMPARE PACKAGES</h2>
+      <p class="mono">A quick side-by-side view before customizing.</p>
+      <button class="secondary" onclick="go('results')">Back</button>
+    </div>
+
+    <div class="section" style="overflow:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Best Value</th>
+            <th>Best Overall</th>
+            <th>Premium Experience</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Package</td><td>Smart TV + Audio Upgrade</td><td>TV + Music Casting</td><td>Immersive Home Theater</td></tr>
+          <tr><td>Product Types</td><td>Indoor TV</td><td>Indoor TV / Outdoor TV</td><td>Projector / Premium TV</td></tr>
+          <tr><td>Audio</td><td>Soundbar or simple casting</td><td>Music casting speakers</td><td>Full surround (in-wall or in-ceiling)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       REVIEW AND SUBMIT
+       ====================================================== -->
+  <section id="review" class="page hidden">
+    <div class="section-head">
+      <h2>REVIEW & SUBMIT</h2>
+      <p class="mono">
+        Summary includes product type, brand/model, size, screen type, resolution, audio, support items, site conditions, and pricing.
+      </p>
+      <button class="secondary" onclick="go('builderPage')">Back to Builder</button>
+    </div>
+
+    <div class="review-grid">
+      <div class="section">
+        <h3>Contact Info</h3>
+        <input id="customerName" placeholder="Full Name" />
+        <input id="customerEmail" placeholder="Email" />
+        <input id="customerPhone" placeholder="Phone" />
+        <input id="customerAddress" placeholder="Project Address" />
+        <input id="customerTimeline" placeholder="Project Timeline" />
+        <textarea id="projectNotes" placeholder="Project notes"></textarea>
+      </div>
+
+      <div class="section">
+        <h3>Package Summary</h3>
+        <div id="reviewSummary"></div>
+
+        <button style="width:100%;margin-top:20px" onclick="submitPackage()">Submit My Custom Package Request →</button>
+
+        <div class="email-note">
+          <b>Email setup:</b> Change <code>recipientEmail</code> inside <code>email.js</code> to your team's email address. Also add your EmailJS <code>publicKey</code>, <code>serviceId</code>, and <code>templateId</code>. This static prototype emails the full quote as text inside the email body and also opens an optional printable view.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       THANK YOU PAGE
+       ====================================================== -->
+  <section id="thanks" class="page loading hidden">
+    <div class="section" style="max-width:720px">
+      <span class="badge">Submitted</span>
+      <h2 class="mono">Thank You — Your Custom Package Request Was Submitted.</h2>
+      <p class="muted">Technology Interiors will review your selections and contact you.</p>
+      <h3 id="ref"></h3>
+      <button onclick="go('landing')">Start Another Package</button>
+    </div>
+  </section>
+
+
+  <!-- ======================================================
+       EMAIL SENDING SCRIPTS
+       ====================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="email.js"></script>
+
+  <!-- ======================================================
+       APPLICATION JAVASCRIPT
+       ====================================================== -->
+  <script>
+
+    /*********************************************************
+     * PRICING DATA FROM CSV
+     *********************************************************/
+    const csvPrices = {"apple_tv": 198.0, "sunbrite_43": 1650.95, "sunbrite_mount": 178.95, "projector_mount": 399.0, "epson_3800": 1699.99, "epson_ls9000": 3999.0, "sony_projector": 5999.99, "denon_soundbar": 699.0, "tv_labor": 265.0, "sonos_amp": 799.99, "sonos_era": 249.95, "denon_x1800": 862.65, "denon_x3800": 1699.0, "origin100": 399.0, "origin300": 649.0, "origin_lcr": 1299.0, "hdmi": 90.0, "power": 125.0, "labor": 120.0, "program": 150.0, "prewire714": 345.0, "prewire724": 365.0, "c4_dimmer": 244.95, "c4_keypad": 340.99, "ovrc": 20.0};
+
+    // Additional product aliases and fallbacks used by the updated product rules.
+    csvPrices.sonos_arc_ultra = csvPrices.sonos_arc_ultra || 1099;
+    csvPrices.samsung_terrace = csvPrices.samsung_terrace || 999.99;
+
+    // Origin is now preferred over Origin for architectural speakers.
+    csvPrices.origin_d65 = csvPrices.origin_d65 || 401;
+    csvPrices.origin_d85 = csvPrices.origin_d85 || 650;
+    csvPrices.origin_lcr = csvPrices.origin_lcr || 1700;
+    csvPrices.outdoor_speaker = csvPrices.outdoor_speaker || 535;
+
+
+    /*********************************************************
+     * QUESTIONNAIRE DATA
+     *********************************************************/
+    const questions = [
+      ["What is this system for?", [
+        ["Residential", "For home theater, living room TV, outdoor entertainment, or whole-home audio."],
+        ["Commercial", "For office, conference room, training room, or business display needs."]
+      ]],
+      ["Which room or area?", [
+        ["Living Room", "Everyday movies, sports, TV, and music."],
+        ["Dedicated Theater", "More cinematic viewing and immersive surround."],
+        ["Conference Room", "Presentation display and room control."],
+        ["Outdoor", "Weather-aware outdoor TV or audio."],
+        ["Multi-Room", "Music or AV across several areas."]
+      ]],
+      ["Primary use?", [
+        ["Movies & TV", "Prioritize picture quality and comfortable watching."],
+        ["Music Listening", "Prioritize casting and speakers."],
+        ["Sports & Gaming", "Bright screen, motion handling, and response time."],
+        ["Business Presentations", "Prioritize reliable displays and control."],
+        ["Whole-Home Audio", "Prioritize zones and easy music access."]
+      ]],
+      ["Budget direction?", [
+        ["Best Value", "Clean upgrade that can grow later."],
+        ["Best Overall", "Balanced performance and value."],
+        ["Premium Experience", "High-end immersive performance."]
+      ]]
+    ];
+
+    /*********************************************************
+     * PACKAGE CARD DATA
+     *********************************************************/
+    const packages = [
+      {
+        id: "overall",
+        badge: "Best Overall",
+        name: "TV + Music Casting",
+        img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=1200&auto=format&fit=crop",
+        summary: "High-quality TV plus speakers for wireless music casting.",
+        bullets: [
+          "Excellent picture + music listening",
+          "Includes casting-focused speaker path",
+          "Customizable by brand, size, type, and resolution"
+        ]
+      },
+      {
+        id: "premium",
+        badge: "Premium Experience",
+        name: "Immersive Home Theater",
+        img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1200&auto=format&fit=crop",
+        summary: "Full surround sound with speakers (in-wall or in-ceiling) paired with premium TV or projector choices.",
+        bullets: [
+          "Premium TV or projector",
+          "Surround speakers (in-wall or in-ceiling)",
+          "Expandable to lighting and acoustics"
+        ]
+      },
+      {
+        id: "value",
+        badge: "Best Value",
+        name: "Smart TV + Audio Upgrade",
+        img: "https://images.unsplash.com/photo-1601944179066-29786cb9d32a?q=80&w=1200&auto=format&fit=crop",
+        summary: "A capable TV with easy audio upgrade options and room to expand later.",
+        bullets: [
+          "Budget-friendly starting point",
+          "Smart TV configuration",
+          "Optional soundbar or casting speakers"
+        ]
+      }
+    ];
+
+    /*********************************************************
+     * PRODUCT TYPE DATA
+     * -------------------------------------------------------
+     * Each product type has its own brand/model, size, type,
+     * and resolution choices. This is what makes the builder
+     * specific to the customer's selected product type.
+     *********************************************************/
+    const productTypes = [
+      {
+        id: "indoorTv",
+        name: "Indoor TV",
+        img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=1200&auto=format&fit=crop",
+        desc: "Best for living rooms, bedrooms, and casual media spaces.",
+        brands: [["Sony", 0], ["Samsung", 0], ["LG", 0]],
+        sizes: [["55 inch", 1200], ["65 inch", 1800], ["75 inch", 2800], ["85 inch", 4200], ["98+ inch", 7000]],
+        types: [["OLED — best contrast", 1200], ["QLED/Mini-LED — brighter rooms", 850], ["LED — value option", 350]],
+        resolutions: [["4K", 0]],
+        audioAllowed: ["soundbar", "surround", "audiophile", "none"]
+      },
+      {
+        id: "projector",
+        name: "Theater / Projector + Screen",
+        img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1200&auto=format&fit=crop",
+        desc: "Best for dedicated theaters and large cinematic viewing.",
+        brands: [
+          ["Epson LS9000", csvPrices.epson_ls9000],
+          ["Sony VPL-XW5000ES", csvPrices.sony_projector],
+          ["Epson QB1000", 7999]
+        ],
+        sizes: [["120 inch screen", 1400], ["135 inch screen", 2400], ["150 inch screen", 3200]],
+        types: [["Standard screen", 0], ["Acoustically transparent screen", 1800]],
+        resolutions: [["4K", 0]],
+        audioAllowed: ["surround", "audiophile", "none"]
+      },
+      {
+        id: "outdoorTv",
+        name: "Outdoor TV",
+        img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop",
+        desc: "Best for patios, porches, and weather-aware entertainment areas.",
+        brands: [
+          ["SunBrite", csvPrices.sunbrite_43],
+          ["Samsung Terrace", csvPrices.samsung_terrace]
+        ],
+        sizes: [["43 inch", 0], ["55 inch", 950], ["65 inch", 1500], ["75 inch", 2300]],
+        types: [["Full-shade outdoor TV", 0], ["Partial-sun outdoor TV", 900], ["Samsung Full Sun", 2600]],
+        resolutions: [["4K", 0]],
+        audioAllowed: ["outdoorStereo", "none"]
+      },
+      {
+        id: "commercial",
+        name: "Commercial Display",
+        img: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1200&auto=format&fit=crop",
+        desc: "Best for conference rooms, offices, signage, and presentation spaces.",
+        brands: [["Samsung", 2400], ["LG", 2300], ["Sony", 2600]],
+        sizes: [["65 inch", 2100], ["75 inch", 3300], ["85 inch", 5000], ["100 inch", 8500]],
+        types: [["Standard TV", 0], ["Commercial display", 950], ["Video conference display", 1200], ["Digital signage display", 800], ["Video Wall", 2500]],
+        resolutions: [["4K", 0]],
+        audioAllowed: ["commercialBasic", "micPa", "none"]
+      }
+    ];
+
+        /*********************************************************
+     * AUDIO, SUPPORTING ITEMS, ADD-ONS, SITE CONDITIONS
+     *********************************************************/
+    const audioOptionsData = [
+      ["none", "No Audio Add-On", "No added audio system. Display-only setup.", 0],
+      ["soundbar", "Sonos Arc Ultra Soundbar", "Sonos Arc Ultra soundbar plus TV setup labor.", Math.round(csvPrices.sonos_arc_ultra + csvPrices.tv_labor)],
+      ["surround", "Full Surround System (in-wall)", "Denon AVR-X1800H + Origin architectural in-wall speakers + prewire + estimated labor.", Math.round(csvPrices.denon_x1800 + (5 * csvPrices.origin_d65) + csvPrices.prewire714 + (6 * csvPrices.labor))],
+      ["audiophile", "Premium Audiophile Setup (in-wall)", "Denon AVR-X3800H + premium Origin architectural in-wall speakers + 7.2.4 prewire + estimated labor.", Math.round(csvPrices.denon_x3800 + (3 * csvPrices.origin_lcr) + (4 * csvPrices.origin_d85) + csvPrices.prewire724 + (10 * csvPrices.labor))],
+      ["outdoorStereo", "Streaming Stereo System + Outdoor Speakers", "Streaming stereo amplifier plus outdoor speakers for patio or outdoor audio.", Math.round(csvPrices.sonos_amp + (2 * csvPrices.outdoor_speaker) + csvPrices.tv_labor)],
+      ["commercialBasic", "Commercial Display Audio", "Basic audio support for a commercial display or conference room.", 1200],
+      ["micPa", "Microphone + PA System", "Commercial microphone and PA system for presentations, meetings, or events.", 5000]
+    ];
+
+        const requiredBase = [
+      ["Premium HDMI / Low-Voltage Cabling", "CSV item add 16/4 + CAT6.", Math.round(csvPrices.hdmi)],
+      ["Power / Outlet Preparation", "CSV item AC Outlet.", Math.round(csvPrices.power)],
+      ["Professional Installation Package", "Estimated 4 tech-hours at CSV labor rate.", Math.round(4 * csvPrices.labor)],
+      ["System Calibration & Setup", "Estimated 2 programming/setup hours.", Math.round(2 * csvPrices.program)],
+      ["Apple TV 4K Streaming Device If Needed", "Apple TV 128GB WiFi/Ethernet 4K.", Math.round(csvPrices.apple_tv)]
+    ];
+
+    const addons = [
+      ["Motorized Shades", 0],
+      ["Additional Zone for Whole-Home Music", Math.round(csvPrices.sonos_amp + (2 * csvPrices.origin100) + 225), "Sonos Amp + two Origin speakers + audio zone labor."],
+      ["Lighting Control Integration", Math.round(csvPrices.c4_dimmer + csvPrices.c4_keypad + (2 * csvPrices.program)), "Control4 dimmer + keypad + programming."],
+      ["Acoustic Treatments", 0],
+      ["Extended Service Plan", Math.round(12 * csvPrices.ovrc), "12 months of OVRC Monitoring."]
+    ];
+
+    const siteConditions = [
+      "Wires already run in the walls",
+      "No existing wiring",
+      "Unfinished utility closet nearby",
+      "Finished walls/ceiling may require extra labor",
+      "Outdoor or special location",
+      "Customer wants everything hidden"
+    ];
+
+    /*********************************************************
+     * APP STATE
+     *********************************************************/
+    let step = 0;
+    let answers = {};
+    let selectedPackage = "overall";
+    let productType = "indoorTv";
+    let selectedAudio = "soundbar";
+    let selectedAddons = [];
+    let selectedSites = [];
+
+    /*********************************************************
+     * GENERAL HELPERS
+     *********************************************************/
+    function money(amount) {
+      return Number(amount || 0).toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+      });
+    }
+
+    function go(pageId) {
+      document.querySelectorAll(".page").forEach(page => page.classList.add("hidden"));
+      document.getElementById(pageId).classList.remove("hidden");
+
+      if (pageId === "quiz") renderQuestion();
+      if (pageId === "results") renderResults();
+      if (pageId === "builderPage") renderBuilder();
+      if (pageId === "review") renderReview();
+
+      window.scrollTo(0, 0);
+    }
+
+    function getProduct() {
+      return productTypes.find(product => product.id === productType) || productTypes[0];
+    }
+
+    function getSelectValue(id) {
+      const element = document.getElementById(id);
+      return element ? Number(element.value || 0) : 0;
+    }
+
+    function getSelectLabel(id) {
+      const element = document.getElementById(id);
+      return element && element.selectedOptions[0] ? element.selectedOptions[0].textContent : "";
+    }
+
+    /*********************************************************
+     * QUESTIONNAIRE FUNCTIONS
+     *********************************************************/
+    function renderQuestion() {
+      qcount.textContent = `Question ${step + 1} of ${questions.length}`;
+      qbar.style.width = `${((step + 1) / questions.length) * 100}%`;
+      qtitle.textContent = questions[step][0];
+
+      options.innerHTML = questions[step][1].map(option => `
+        <div class="option ${answers[step] === option[0] ? "active" : ""}" onclick="answers[${step}]='${option[0]}';renderQuestion()">
+          <strong>${option[0]}</strong>
+          <span>${option[1]}</span>
+        </div>
+      `).join("");
+    }
+
+    function nextQuestion() {
+      if (step < questions.length - 1) {
+        step++;
+        renderQuestion();
+      } else {
+        showLoading();
+      }
+    }
+
+    function backQuestion() {
+      if (step > 0) {
+        step--;
+        renderQuestion();
+      } else {
+        go("landing");
+      }
+    }
+
+    /*********************************************************
+     * LOADING SCREEN
+     *********************************************************/
+    function showLoading() {
+      go("loading");
+
+      const tips = [
+        "Screen size options change based on product type.",
+        "Existing wiring can lower labor estimates.",
+        "High-end audio is labeled in-wall or in-ceiling."
+      ];
+
+      let i = 0;
+      const timer = setInterval(() => {
+        tip.textContent = tips[i++ % tips.length];
+      }, 1000);
+
+      setTimeout(() => {
+        clearInterval(timer);
+        go("results");
+      }, 2300);
+    }
+
+    /*********************************************************
+     * RESULTS DASHBOARD
+     *********************************************************/
+    function renderResults() {
+      const room = answers[1] || "your space";
+      resultHeadline.textContent = `3 SYSTEMS FOR ${room.toUpperCase()}`;
+
+      packageCards.innerHTML = packages.map(packageItem => `
+        <article class="card">
+          <img src="${packageItem.img}" alt="${packageItem.name}">
+          <div class="pad">
+            <span class="badge">${packageItem.badge}</span>
+            <h3>${packageItem.name}</h3>
+            <p>${packageItem.summary}</p>
+            <ul>${packageItem.bullets.map(bullet => `<li>${bullet}</li>`).join("")}</ul>
+            <button onclick="selectPackage('${packageItem.id}')">Customize This Package →</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function selectPackage(id) {
+      selectedPackage = id;
+
+      // Default product/audio choices based on selected package
+      if (id === "premium") {
+        productType = "projector";
+        selectedAudio = "surround";
+      }
+      if (id === "overall") {
+        productType = "indoorTv";
+        selectedAudio = "soundbar";
+      }
+      if (id === "value") {
+        productType = "indoorTv";
+        selectedAudio = "soundbar";
+      }
+
+      go("builderPage");
+    }
+
+    /*********************************************************
+     * PACKAGE BUILDER FUNCTIONS
+     *********************************************************/
+    function renderBuilder() {
+      const packageItem = packages.find(item => item.id === selectedPackage) || packages[0];
+      const product = getProduct();
+
+      builderTitle.textContent = packageItem.name.toUpperCase();
+      builderBadge.textContent = packageItem.badge;
+
+      renderProductTypeGrid();
+      renderDynamicProductConfig(product);
+      renderScreenVisuals();
+      renderAudioOptions();
+      renderRequiredItems();
+      renderSiteOptions();
+      renderOptionalItems();
+      updateTotals();
+    }
+
+    function renderProductTypeGrid() {
+      productTypeGrid.innerHTML = productTypes.map(product => `
+        <div class="ptype ${productType === product.id ? "active" : ""}" onclick="productType='${product.id}';renderBuilder()">
+          <img src="${product.img}" alt="${product.name}">
+          <div>
+            <strong>${product.name}</strong>
+            <span>${product.desc}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderDynamicProductConfig(product) {
+      configTitle.textContent = `2. Configure ${product.name}`;
+      configDescription.textContent = product.desc + " The choices below are specific to this product type.";
+
+      dynamicConfig.innerHTML = `
+        <label>Brand / Model
+          <select id="brandSelect" onchange="updateTotals()">
+            ${product.brands.map(item => `<option value="${item[1]}">${item[0]}${item[1] ? " — " + money(item[1]) : ""}</option>`).join("")}
+          </select>
+        </label>
+
+        <label>Screen Size
+          <select id="sizeSelect" onchange="updateTotals();renderScreenVisuals()">
+            ${product.sizes.map(item => `<option value="${item[1]}">${item[0]}${item[1] ? " — " + money(item[1]) : ""}</option>`).join("")}
+          </select>
+        </label>
+
+        <label>Screen Type
+          <select id="typeSelect" onchange="updateTotals()">
+            ${product.types.map(item => `<option value="${item[1]}">${item[0]}${item[1] ? " — " + money(item[1]) : ""}</option>`).join("")}
+          </select>
+        </label>
+
+        <label>Resolution
+          <select id="resolutionSelect" onchange="updateTotals()">
+            ${product.resolutions.map(item => `<option value="${item[1]}">${item[0]}${item[1] ? " — " + money(item[1]) : ""}</option>`).join("")}
+          </select>
+        </label>
+      `;
+    }
+
+    function renderScreenVisuals() {
+      const product = getProduct();
+      const selectedSize = getSelectLabel("sizeSelect").split("—")[0].trim();
+      const maxIndex = Math.max(1, product.sizes.length - 1);
+
+      screenVisuals.innerHTML = product.sizes.map((size, index) => {
+        const width = 54 + (index / maxIndex) * 86;
+        const height = width * 0.56;
+        const label = size[0];
+        const isActive = label === selectedSize;
+
+        return `
+          <div class="screen-box ${isActive ? "active" : ""}" onclick="selectScreenSize(${index})" title="Select ${label}">
+            <div class="screen ${isActive ? "active" : ""}" style="width:${width}px;height:${height}px"></div>
+            <b>${label}</b>
+            ${isActive ? "<span>Selected</span>" : "<span>Click to select</span>"}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function selectScreenSize(index) {
+      const sizeSelect = document.getElementById("sizeSelect");
+      if (!sizeSelect) return;
+
+      sizeSelect.selectedIndex = index;
+      updateTotals();
+      renderScreenVisuals();
+    }
+
+    function renderAudioOptions() {
+      const product = getProduct();
+      const allowedAudioIds = product.audioAllowed || audioOptionsData.map(audio => audio[0]);
+      const filteredAudio = audioOptionsData.filter(audio => allowedAudioIds.includes(audio[0]));
+
+      // If the current audio choice is not valid for this product type,
+      // automatically select the first valid option.
+      if (!allowedAudioIds.includes(selectedAudio)) {
+        selectedAudio = filteredAudio[0]?.[0] || "none";
+      }
+
+      audioOptions.innerHTML = filteredAudio.map(audio => `
+        <div class="option ${selectedAudio === audio[0] ? "active" : ""}" onclick="selectedAudio='${audio[0]}';renderBuilder()">
+          <strong>${audio[1]}</strong>
+          <span>${audio[2]}<br>${audio[3] > 0 ? money(audio[3]) + " estimate" : "No added cost"}</span>
+        </div>
+      `).join("");
+    }
+
+        function getRequiredItems() {
+      const items = [...requiredBase];
+
+      if (productType === "projector") {
+        items.unshift(["Projector Mount", "Chief Mounts CHF4500 from uploaded item list.", Math.round(csvPrices.projector_mount)]);
+      } else {
+        items.unshift(["Display Mount", "Wall/display mount estimate from uploaded item list where available.", Math.round(csvPrices.sunbrite_mount || 179)]);
+      }
+
+      return items;
+    }
+
+    function renderRequiredItems() {
+      requiredItems.innerHTML = getRequiredItems().map(item => `
+        <div class="line">
+          <span><b>${item[0]}</b><small>${item[1]}</small></span>
+          <b>${money(item[2])}</b>
+        </div>
+      `).join("");
+    }
+
+    function renderSiteOptions() {
+      siteOptions.innerHTML = siteConditions.map((condition, index) => `
+        <div class="option ${selectedSites.includes(index) ? "active" : ""}" onclick="toggleSite(${index})">
+          <strong>${condition}</strong>
+          <span>Helps estimate labor and prep needs.</span>
+        </div>
+      `).join("");
+    }
+
+    function renderOptionalItems() {
+      optionalItems.innerHTML = addons.map((addon, index) => `
+        <div class="option ${selectedAddons.includes(index) ? "active" : ""}" onclick="toggleAddon(${index})">
+          <strong>${addon[0]}</strong>
+          <span>${addon[1] > 0 ? money(addon[1]) + " estimate" : "Quoted after review"}<br>${addon[2]}</span>
+        </div>
+      `).join("");
+    }
+
+    function toggleAddon(index) {
+      selectedAddons = selectedAddons.includes(index)
+        ? selectedAddons.filter(item => item !== index)
+        : [...selectedAddons, index];
+
+      renderBuilder();
+    }
+
+    function toggleSite(index) {
+      selectedSites = selectedSites.includes(index)
+        ? selectedSites.filter(item => item !== index)
+        : [...selectedSites, index];
+
+      renderBuilder();
+    }
+
+    /*********************************************************
+     * PRICING FUNCTIONS
+     *********************************************************/
+    function totals() {
+      const display =
+        getSelectValue("brandSelect") +
+        getSelectValue("sizeSelect") +
+        getSelectValue("typeSelect") +
+        getSelectValue("resolutionSelect");
+
+      const product = getProduct();
+      const allowedAudioIds = product.audioAllowed || audioOptionsData.map(item => item[0]);
+      const validAudio = allowedAudioIds.includes(selectedAudio) ? selectedAudio : allowedAudioIds[0];
+      const audio = (audioOptionsData.find(item => item[0] === validAudio) || audioOptionsData[0])[3];
+      const support = getRequiredItems().reduce((sum, item) => sum + Number(item[2] || 0), 0);
+      const add = selectedAddons.reduce((sum, index) => sum + Number(addons[index][1] || 0), 0);
+      const tax = (display + audio + support + add) * 0.07;
+
+      return {
+        display,
+        audio,
+        support,
+        add,
+        tax,
+        total: display + audio + support + add + tax
+      };
+    }
+
+    function updateTotals() {
+      const currentTotals = totals();
+
+      displayTotal.textContent = money(currentTotals.display);
+      audioTotal.textContent = money(currentTotals.audio);
+      supportTotal.textContent = money(currentTotals.support);
+      addonTotal.textContent = money(currentTotals.add);
+      taxTotal.textContent = money(currentTotals.tax);
+      grandTotal.textContent = money(currentTotals.total);
+    }
+
+    /*********************************************************
+     * QUOTE DATA + REVIEW SUMMARY
+     *********************************************************/
+    function collectQuoteData() {
+      const product = getProduct();
+      const currentTotals = totals();
+      const allowedAudioIds = product.audioAllowed || audioOptionsData.map(item => item[0]);
+      const validAudio = allowedAudioIds.includes(selectedAudio) ? selectedAudio : allowedAudioIds[0];
+      const audio = audioOptionsData.find(item => item[0] === validAudio) || audioOptionsData[0];
+
+      return {
+        reference: `TI-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 89999)}`,
+        customer: {
+          name: customerName.value,
+          email: customerEmail.value,
+          phone: customerPhone.value,
+          address: customerAddress.value,
+          timeline: customerTimeline.value,
+          notes: projectNotes.value
+        },
+        answers,
+        package: (packages.find(item => item.id === selectedPackage) || packages[0]).name,
+        productType: product.name,
+        brandModel: getSelectLabel("brandSelect"),
+        screenSize: getSelectLabel("sizeSelect"),
+        screenType: getSelectLabel("typeSelect"),
+        resolution: getSelectLabel("resolutionSelect"),
+        audio: audio[1],
+        siteConditions: selectedSites.map(index => siteConditions[index]),
+        siteNotes: siteNotes.value,
+        selectedAddons: selectedAddons.map(index => addons[index][0]),
+        totals: currentTotals
+      };
+    }
+
+    function renderReview() {
+      const quote = collectQuoteData();
+
+      reviewSummary.innerHTML = `
+        <div class="line"><span>Product Type</span><b>${quote.productType}</b></div>
+        <div class="line"><span>Brand / Model</span><b>${quote.brandModel}</b></div>
+        <div class="line"><span>Screen Size</span><b>${quote.screenSize}</b></div>
+        <div class="line"><span>Screen Type</span><b>${quote.screenType}</b></div>
+        <div class="line"><span>Resolution</span><b>${quote.resolution}</b></div>
+        <div class="line"><span>Audio</span><b>${quote.audio}</b></div>
+        <div class="line"><span>Site Conditions</span><b>${quote.siteConditions.join(", ") || "No site conditions selected"}</b></div>
+        <div class="line"><span>Site Notes</span><b>${quote.siteNotes || "No notes added"}</b></div>
+        <div class="line"><span>Estimated Total</span><b class="price">${money(quote.totals.total)}</b></div>
+        <p class="muted">Pricing is estimate-only and must be finalized after site review.</p>
+      `;
+    }
+
+    /*********************************************************
+     * PDF / EMAIL SUBMISSION FUNCTIONS
+     *********************************************************/
+
+    /*
+      Creates a printable quote view.
+      Customer or sales team can use the browser's Print > Save as PDF.
+    */
+    function openPrintableQuote(quote) {
+      const popup = window.open("", "_blank");
+
+      popup.document.write(`
+        <html>
+          <head>
+            <title>${quote.reference} Quote Package</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 32px; color: #111; }
+              h1 { margin-bottom: 4px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              td, th { border: 1px solid #ccc; padding: 10px; text-align: left; }
+              .total { font-size: 24px; font-weight: bold; }
+              .note { margin-top: 24px; font-size: 13px; color: #555; }
+            </style>
+          </head>
+          <body>
+            <h1>Technology Interiors Quote Package</h1>
+            <p><strong>Reference:</strong> ${quote.reference}</p>
+            <p><strong>Customer:</strong> ${quote.customer.name || "Not provided"}</p>
+            <p><strong>Email:</strong> ${quote.customer.email || "Not provided"}</p>
+            <p><strong>Phone:</strong> ${quote.customer.phone || "Not provided"}</p>
+            <p><strong>Address:</strong> ${quote.customer.address || "Not provided"}</p>
+            <p><strong>Timeline:</strong> ${quote.customer.timeline || "Not provided"}</p>
+
+            <table>
+              <tr><th>Package</th><td>${quote.package}</td></tr>
+              <tr><th>Product Type</th><td>${quote.productType}</td></tr>
+              <tr><th>Brand / Model</th><td>${quote.brandModel}</td></tr>
+              <tr><th>Screen Size</th><td>${quote.screenSize}</td></tr>
+              <tr><th>Screen Type</th><td>${quote.screenType}</td></tr>
+              <tr><th>Resolution</th><td>${quote.resolution}</td></tr>
+              <tr><th>Audio</th><td>${quote.audio}</td></tr>
+              <tr><th>Site Conditions</th><td>${quote.siteConditions.join(", ") || "None selected"}</td></tr>
+              <tr><th>Site Notes</th><td>${quote.siteNotes || "None"}</td></tr>
+              <tr><th>Add-ons</th><td>${quote.selectedAddons.join(", ") || "None selected"}</td></tr>
+              <tr><th>Display</th><td>${money(quote.totals.display)}</td></tr>
+              <tr><th>Audio</th><td>${money(quote.totals.audio)}</td></tr>
+              <tr><th>Supporting Items</th><td>${money(quote.totals.support)}</td></tr>
+              <tr><th>Optional Upgrades</th><td>${money(quote.totals.add)}</td></tr>
+              <tr><th>Estimated Tax</th><td>${money(quote.totals.tax)}</td></tr>
+              <tr><th class="total">Estimated Total</th><td class="total">${money(quote.totals.total)}</td></tr>
+            </table>
+
+            <p class="note">
+              Pricing is an estimate only. Final price must be verified after site review and final design.
+            </p>
+
+            <script>
+              window.onload = function() {
+                window.print();
+              };
+            <\/script>
+          </body>
+        </html>
+      `);
+
+      popup.document.close();
+    }
+
+    /*
+      Email delivery is handled by email.js.
+
+      This page calls:
+        sendTIQuoteEmail(quote)
+
+      Configure EmailJS keys and the recipient email inside:
+        email.js
+    */
+
+    async function submitPackage() {
+      const quote = collectQuoteData();
+
+      /*
+        The external file email.js provides sendTIQuoteEmail().
+        That function sends the customer's selections as plain text inside
+        the email body using EmailJS.
+      */
+      let emailResult = { success: false };
+
+      if (typeof sendTIQuoteEmail === "function") {
+        emailResult = await sendTIQuoteEmail(quote);
+      } else {
+        console.error("sendTIQuoteEmail() was not found. Make sure email.js is loaded.");
+      }
+
+      /*
+        Keep the printable quote view so the team/customer can also
+        save the quote as a PDF from the browser.
+      */
+      openPrintableQuote(quote);
+
+      ref.textContent = emailResult.success
+        ? `Reference #: ${quote.reference} — Email sent successfully.`
+        : `Reference #: ${quote.reference} — Submission saved, but email configuration needs to be checked.`;
+
+      go("thanks");
+    }
+
+    /*********************************************************
+     * INITIALIZE APP
+     *********************************************************/
+    renderQuestion();
+  </script>
+</body>
+</html>
