@@ -1,13 +1,14 @@
 /**
 * Technology Interiors Quote Email Sender
+* Using external config.js for security
 */
 
 const TI_EMAIL_CONFIG = {
-  publicKey: "UdNSae-OZciQffGiv",
-  serviceId: "service_9674ric",
-  templateId: "template_jw4qtkt",
-  recipientEmail: "technologyinteriors01@gmail.com",
-  companyName: "Technology Interiors"
+publicKey: window.TI_CONFIG?.emailjs?.publicKey || "",
+serviceId: window.TI_CONFIG?.emailjs?.serviceId || "",
+templateId: window.TI_CONFIG?.emailjs?.templateId || "",
+recipientEmail: window.TI_CONFIG?.recipientEmail || "technologyinteriors01@gmail.com",
+companyName: "Technology Interiors"
 };
 
 function initializeTIEmail() {
