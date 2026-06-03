@@ -1,10 +1,9 @@
 /**
- * Technology Interiors Quote Email Sender
- * Sends quote data through a Netlify Function so EmailJS keys stay server-side.
+ * Technology Interiors Quote Form Sender
  */
 
-const TI_EMAIL_CONFIG = {
-  endpoint: "/.netlify/functions/send-quote",
+const TI_FORM_CONFIG = {
+  formName: "quote-request",
   companyName: "Technology Interiors"
 };
 
@@ -94,26 +93,22 @@ Technology Interiors completes a site review and final design.
 `.trim();
 }
 
-function buildTIQuoteEmailData(quote) {
-  const fullEmailBody = buildQuoteEmailBody(quote);
+function buildTIQuoteFormData(quote) {
+  const customer = quote.customer || {};
+  const totals = quote.totals || {};
+  const fullQuote = buildQuoteEmailBody(quote);
 
   return {
-    company_name: TI_EMAIL_CONFIG.companyName,
-    reference: safeText(quote.reference),
+    "form-name": TI_FORM_CONFIG.formName,
+    company_name: TI_FORM_CONFIG.companyName,
     subject: `Technology Interiors Quote Request - ${safeText(quote.reference)}`,
-
-    // Put this in your EmailJS template body: {{message}}
-    message: fullEmailBody,
-    quote_body: fullEmailBody,
-    quote_text: fullEmailBody,
-
-    customer_name: safeText(quote.customer?.name),
-    customer_email: safeText(quote.customer?.email),
-    customer_phone: safeText(quote.customer?.phone),
-    customer_address: safeText(quote.customer?.address),
-    customer_timeline: safeText(quote.customer?.timeline),
-    customer_notes: safeText(quote.customer?.notes),
-
+    reference: safeText(quote.reference),
+    customer_name: safeText(customer.name, ""),
+    customer_email: safeText(customer.email, ""),
+    customer_phone: safeText(customer.phone, ""),
+    customer_address: safeText(customer.address, ""),
+    customer_timeline: safeText(customer.timeline, ""),
+    customer_notes: safeText(customer.notes, ""),
     selected_package: safeText(quote.package),
     product_type: safeText(quote.productType),
     brand_model: safeText(quote.brandModel),
@@ -121,42 +116,37 @@ function buildTIQuoteEmailData(quote) {
     screen_type: safeText(quote.screenType),
     resolution: safeText(quote.resolution),
     audio: safeText(quote.audio),
-    site_conditions: safeText(quote.siteConditions),
-    site_notes: safeText(quote.siteNotes),
+    site_conditions: safeText(quote.siteConditions, "None selected"),
+    site_notes: safeText(quote.siteNotes, ""),
     selected_addons: safeText(quote.selectedAddons, "None selected"),
-
-    display_total: formatCurrency(quote.totals?.display),
-    audio_total: formatCurrency(quote.totals?.audio),
-    support_total: formatCurrency(quote.totals?.support),
-    addon_total: formatCurrency(quote.totals?.add),
-    estimated_tax: formatCurrency(quote.totals?.tax),
-    estimated_total: formatCurrency(quote.totals?.total),
-
-    pricing_disclaimer:
-      "Pricing is an estimate only. Final price must be verified after site review and final design."
+    display_total: formatCurrency(totals.display),
+    audio_total: formatCurrency(totals.audio),
+    support_total: formatCurrency(totals.support),
+    addon_total: formatCurrency(totals.add),
+    estimated_tax: formatCurrency(totals.tax),
+    estimated_total: formatCurrency(totals.total),
+    quote_details: fullQuote
   };
 }
 
 async function sendTIQuoteEmail(quote) {
-  const templateData = buildTIQuoteEmailData(quote);
+  const formData = new URLSearchParams(buildTIQuoteFormData(quote));
 
   try {
-    const response = await fetch(TI_EMAIL_CONFIG.endpoint, {
+    const response = await fetch("/", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ templateData })
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString()
     });
 
-    const result = await response.json().catch(() => ({}));
-
     if (!response.ok) {
-      throw new Error(result.error || "Quote email request failed.");
+      throw new Error("Netlify form submission failed.");
     }
 
-    console.log("Technology Interiors quote email sent:", result);
-    return { success: true, response: result };
+    console.log("Technology Interiors quote submitted through Netlify Forms.");
+    return { success: true, response };
   } catch (error) {
-    console.error("Technology Interiors quote email failed:", error);
+    console.error("Technology Interiors quote form submission failed:", error);
     return { success: false, error };
   }
 }
