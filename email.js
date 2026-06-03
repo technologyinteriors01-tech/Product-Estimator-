@@ -1,25 +1,12 @@
 /**
-* Technology Interiors Quote Email Sender
-* Using external config.js for security
-*/
+ * Technology Interiors Quote Email Sender
+ * Sends quote data through a Netlify Function so EmailJS keys stay server-side.
+ */
 
 const TI_EMAIL_CONFIG = {
-publicKey: publicKey,
-serviceId: serviceId,
-templateId: templateId,
-recipientEmail: "technologyinteriors01@gmail.com",
-companyName: "Technology Interiors"
+  endpoint: "/.netlify/functions/send-quote",
+  companyName: "Technology Interiors"
 };
-
-function initializeTIEmail() {
-  if (!window.emailjs) {
-    console.error("EmailJS SDK is not loaded.");
-  return false;
-}
-
-  emailjs.init({ publicKey: TI_EMAIL_CONFIG.publicKey });
-  return true;
-}
 
 function formatCurrency(value) {
   return Number(value || 0).toLocaleString("en-US", {
@@ -111,7 +98,6 @@ function buildTIQuoteEmailData(quote) {
   const fullEmailBody = buildQuoteEmailBody(quote);
 
   return {
-    to_email: TI_EMAIL_CONFIG.recipientEmail,
     company_name: TI_EMAIL_CONFIG.companyName,
     reference: safeText(quote.reference),
     subject: `Technology Interiors Quote Request - ${safeText(quote.reference)}`,
@@ -152,21 +138,23 @@ function buildTIQuoteEmailData(quote) {
 }
 
 async function sendTIQuoteEmail(quote) {
-  if (!initializeTIEmail()) {
-    throw new Error("EmailJS was not initialized.");
-  }
-
   const templateData = buildTIQuoteEmailData(quote);
 
   try {
-    const response = await emailjs.send(
-      TI_EMAIL_CONFIG.serviceId,
-      TI_EMAIL_CONFIG.templateId,
-      templateData
-    );
+    const response = await fetch(TI_EMAIL_CONFIG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ templateData })
+    });
 
-    console.log("Technology Interiors quote email sent:", response);
-    return { success: true, response };
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(result.error || "Quote email request failed.");
+    }
+
+    console.log("Technology Interiors quote email sent:", result);
+    return { success: true, response: result };
   } catch (error) {
     console.error("Technology Interiors quote email failed:", error);
     return { success: false, error };
