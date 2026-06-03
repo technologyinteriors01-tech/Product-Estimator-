@@ -540,6 +540,37 @@
 </head>
 
 <body>
+  <form name="quote-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="quote-request" />
+    <input type="text" name="bot-field" />
+    <input type="text" name="company_name" />
+    <input type="text" name="subject" />
+    <input type="text" name="reference" />
+    <input type="text" name="customer_name" />
+    <input type="email" name="customer_email" />
+    <input type="text" name="customer_phone" />
+    <input type="text" name="customer_address" />
+    <input type="text" name="customer_timeline" />
+    <textarea name="customer_notes"></textarea>
+    <input type="text" name="selected_package" />
+    <input type="text" name="product_type" />
+    <input type="text" name="brand_model" />
+    <input type="text" name="screen_size" />
+    <input type="text" name="screen_type" />
+    <input type="text" name="resolution" />
+    <input type="text" name="audio" />
+    <textarea name="site_conditions"></textarea>
+    <textarea name="site_notes"></textarea>
+    <textarea name="selected_addons"></textarea>
+    <input type="text" name="display_total" />
+    <input type="text" name="audio_total" />
+    <input type="text" name="support_total" />
+    <input type="text" name="addon_total" />
+    <input type="text" name="estimated_tax" />
+    <input type="text" name="estimated_total" />
+    <textarea name="quote_details"></textarea>
+  </form>
+
   <!-- ======================================================
        HEADER
        ====================================================== -->
@@ -752,7 +783,7 @@
         <button style="width:100%;margin-top:20px" onclick="submitPackage()">Submit My Custom Package Request →</button>
 
         <div class="email-note">
-          <b>Email setup:</b> Email delivery is handled by the Netlify Function at <code>netlify/functions/send-quote.js</code>. Add the EmailJS values as Netlify environment variables before deploying.
+          <b>Email setup:</b> Email delivery is handled by Netlify Forms. After deploying, open Netlify Forms and add a submission notification for <code>quote-request</code>.
         </div>
       </div>
     </div>
@@ -1441,13 +1472,13 @@
     }
 
     /*
-      Email delivery is handled by email.js and the Netlify Function.
+      Form delivery is handled by email.js and Netlify Forms.
 
       This page calls:
         sendTIQuoteEmail(quote)
 
-      Configure EmailJS keys and the recipient email as Netlify
-      environment variables, not in browser JavaScript.
+      Netlify detects the hidden quote-request form in this HTML file
+      and stores each submitted package request.
     */
 
     async function submitPackage() {
@@ -1455,8 +1486,7 @@
 
       /*
         The external file email.js provides sendTIQuoteEmail().
-        That function sends the customer's selections to the Netlify
-        Function, which calls EmailJS server-side.
+        That function sends the customer's selections to Netlify Forms.
       */
       let emailResult = { success: false };
 
@@ -1473,8 +1503,8 @@
       openPrintableQuote(quote);
 
       ref.textContent = emailResult.success
-        ? `Reference #: ${quote.reference} — Email sent successfully.`
-        : `Reference #: ${quote.reference} — Submission saved, but email configuration needs to be checked.`;
+        ? `Reference #: ${quote.reference} — Request submitted successfully.`
+        : `Reference #: ${quote.reference} — Submission failed. Please contact Technology Interiors.`;
 
       go("thanks");
     }
