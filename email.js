@@ -4,10 +4,10 @@
 */
 
 const TI_EMAIL_CONFIG = {
-publicKey: window.TI_CONFIG?.emailjs?.publicKey || "",
-serviceId: window.TI_CONFIG?.emailjs?.serviceId || "",
-templateId: window.TI_CONFIG?.emailjs?.templateId || "",
-recipientEmail: window.TI_CONFIG?.recipientEmail || "technologyinteriors01@gmail.com",
+publicKey: publicKey,
+serviceId: serviceId,
+templateId: templateId,
+recipientEmail: "technologyinteriors01@gmail.com",
 companyName: "Technology Interiors"
 };
 
