@@ -125,7 +125,8 @@ function buildTIQuoteFormData(quote) {
     addon_total: formatCurrency(totals.add),
     estimated_tax: formatCurrency(totals.tax),
     estimated_total: formatCurrency(totals.total),
-    quote_details: fullQuote
+    quote_details: fullQuote,
+    printable_quote: fullQuote
   };
 }
 
