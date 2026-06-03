@@ -750,6 +750,10 @@
         <div id="reviewSummary"></div>
 
         <button style="width:100%;margin-top:20px" onclick="submitPackage()">Submit My Custom Package Request →</button>
+
+        <div class="email-note">
+          <b>Email setup:</b> Email delivery is handled by the Netlify Function at <code>netlify/functions/send-quote.js</code>. Add the EmailJS values as Netlify environment variables before deploying.
+        </div>
       </div>
     </div>
   </section>
@@ -771,7 +775,6 @@
   <!-- ======================================================
        EMAIL SENDING SCRIPTS
        ====================================================== -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="email.js"></script>
 
   <!-- ======================================================
@@ -1438,13 +1441,13 @@
     }
 
     /*
-      Email delivery is handled by email.js.
+      Email delivery is handled by email.js and the Netlify Function.
 
       This page calls:
         sendTIQuoteEmail(quote)
 
-      Configure EmailJS keys and the recipient email inside:
-        email.js
+      Configure EmailJS keys and the recipient email as Netlify
+      environment variables, not in browser JavaScript.
     */
 
     async function submitPackage() {
@@ -1452,8 +1455,8 @@
 
       /*
         The external file email.js provides sendTIQuoteEmail().
-        That function sends the customer's selections as plain text inside
-        the email body using EmailJS.
+        That function sends the customer's selections to the Netlify
+        Function, which calls EmailJS server-side.
       */
       let emailResult = { success: false };
 
