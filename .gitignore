@@ -1,0 +1,11 @@
+# Sensitive files - NEVER commit these
+.env
+config.js
+config.local.js
+
+# Build / temporary files
+dist/
+build/
+
+# Logs
+*.log
