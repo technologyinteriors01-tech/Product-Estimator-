@@ -5,13 +5,73 @@ const csvPrices = {"apple_tv": 198.0, "sunbrite_43": 1650.95, "sunbrite_mount": 
 
 // Additional product aliases and fallbacks used by the updated product rules.
 csvPrices.sonos_arc_ultra = csvPrices.sonos_arc_ultra || 1099;
+csvPrices.sonos_beam = csvPrices.sonos_beam || 499;
+csvPrices.sonos_arc_ultra_mount = csvPrices.sonos_arc_ultra_mount || 169;
+csvPrices.sonos_beam_mount = csvPrices.sonos_beam_mount || 89;
 csvPrices.samsung_terrace = csvPrices.samsung_terrace || 999.99;
+csvPrices.sony_str_an1000 = csvPrices.sony_str_an1000 || 899;
+csvPrices.sony_str_az5000es = csvPrices.sony_str_az5000es || 3300;
 
 // Origin is now preferred over Origin for architectural speakers.
 csvPrices.origin_d65 = csvPrices.origin_d65 || 401;
 csvPrices.origin_d85 = csvPrices.origin_d85 || 650;
 csvPrices.origin_lcr = csvPrices.origin_lcr || 1700;
 csvPrices.outdoor_speaker = csvPrices.outdoor_speaker || 535;
+csvPrices.strong_sm_f_l = csvPrices.strong_sm_f_l || 158;
+csvPrices.strong_sm_f_xl = csvPrices.strong_sm_f_xl || 329;
+csvPrices.trip_charge = csvPrices.trip_charge || 50;
+csvPrices.soundbar_labor = csvPrices.soundbar_labor || 50;
+csvPrices.epson_ql3000 = csvPrices.epson_ql3000 || 17000;
+
+const taxRate = 0;
+
+const indoorTvPrices = {
+  "LED": {
+    "55": 500,
+    "65": 700,
+    "75_77": 850,
+    "85": 1000,
+    "98_100": 2000
+  },
+  "QLED": {
+    "55": 900,
+    "65": 1300,
+    "75_77": 1700,
+    "85": 2200,
+    "98_100": 5000
+  },
+  "OLED": {
+    "55": 1500,
+    "65": 2200,
+    "75_77": 3300,
+    "85": 4500,
+    "98_100": 8000
+  }
+};
+
+const indoorTvLabor = {
+  "LED": {
+    "55": 265,
+    "65": 265,
+    "75_77": 300,
+    "85": 350,
+    "98_100": 400
+  },
+  "QLED": {
+    "55": 265,
+    "65": 265,
+    "75_77": 300,
+    "85": 350,
+    "98_100": 400
+  },
+  "OLED": {
+    "55": 265,
+    "65": 265,
+    "75_77": 265,
+    "85": 300,
+    "98_100": 400
+  }
+};
 
 
 /*********************************************************
@@ -99,10 +159,10 @@ const productTypes = [
     img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=1200&auto=format&fit=crop",
     desc: "Best for living rooms, bedrooms, and casual media spaces.",
     brands: [["Sony", 0], ["Samsung", 0], ["LG", 0]],
-    sizes: [["55 inch", 1200], ["65 inch", 1800], ["75 inch", 2800], ["85 inch", 4200], ["98+ inch", 7000]],
-    types: [["OLED — best contrast", 1200], ["QLED/Mini-LED — brighter rooms", 850], ["LED — value option", 350]],
+    sizes: [["55 inch", "55"], ["65 inch", "65"], ["75 / 77 inch", "75_77"], ["85 inch", "85"], ["98 / 100 inch", "98_100"]],
+    types: [["LED — value option", "LED"], ["QLED/Mini-LED — brighter rooms", "QLED"], ["OLED — best contrast", "OLED"]],
     resolutions: [["4K", 0]],
-    audioAllowed: ["soundbar", "surround", "audiophile", "none"]
+    audioAllowed: ["soundbar", "beamSoundbar", "surround", "audiophile", "none"]
   },
   {
     id: "projector",
@@ -112,7 +172,8 @@ const productTypes = [
     brands: [
       ["Epson LS9000", csvPrices.epson_ls9000],
       ["Sony VPL-XW5000ES", csvPrices.sony_projector],
-      ["Epson QB1000", 7999]
+      ["Epson QB1000", 7999],
+      ["Epson QL3000", csvPrices.epson_ql3000]
     ],
     sizes: [["120 inch screen", 1400], ["135 inch screen", 2400], ["150 inch screen", 3200]],
     types: [["Standard screen", 0], ["Acoustically transparent screen", 1800]],
@@ -151,9 +212,10 @@ const productTypes = [
  *********************************************************/
 const audioOptionsData = [
   ["none", "No Audio Add-On", "No added audio system. Display-only setup.", 0],
-  ["soundbar", "Sonos Arc Ultra Soundbar", "Sonos Arc Ultra soundbar plus TV setup labor.", Math.round(csvPrices.sonos_arc_ultra + csvPrices.tv_labor)],
-  ["surround", "Full Surround System (in-wall)", "Denon AVR-X1800H + Origin architectural in-wall speakers + prewire + estimated labor.", Math.round(csvPrices.denon_x1800 + (5 * csvPrices.origin_d65) + csvPrices.prewire714 + (6 * csvPrices.labor))],
-  ["audiophile", "Premium Audiophile Setup (in-wall)", "Denon AVR-X3800H + premium Origin architectural in-wall speakers + 7.2.4 prewire + estimated labor.", Math.round(csvPrices.denon_x3800 + (3 * csvPrices.origin_lcr) + (4 * csvPrices.origin_d85) + csvPrices.prewire724 + (10 * csvPrices.labor))],
+  ["soundbar", "Sonos Arc Ultra Soundbar", "Sonos Arc Ultra soundbar + mount + additional labor.", Math.round(csvPrices.sonos_arc_ultra + csvPrices.sonos_arc_ultra_mount + csvPrices.soundbar_labor)],
+  ["beamSoundbar", "Sonos Beam Soundbar", "Sonos Beam soundbar + mount + additional labor.", Math.round(csvPrices.sonos_beam + csvPrices.sonos_beam_mount + csvPrices.soundbar_labor)],
+  ["surround", "Full Surround System (in-wall)", "Sony STR-AN1000 + Origin architectural in-wall speakers + prewire + estimated labor.", Math.round(csvPrices.sony_str_an1000 + (5 * csvPrices.origin_d65) + csvPrices.prewire714 + (6 * csvPrices.labor))],
+  ["audiophile", "Premium Audiophile Setup (in-wall)", "Sony ES STR-AZ5000ES + premium Origin architectural in-wall speakers + 7.2.4 prewire + estimated labor.", Math.round(csvPrices.sony_str_az5000es + (3 * csvPrices.origin_lcr) + (4 * csvPrices.origin_d85) + csvPrices.prewire724 + (10 * csvPrices.labor))],
   ["outdoorStereo", "Streaming Stereo System + Outdoor Speakers", "Streaming stereo amplifier plus outdoor speakers for patio or outdoor audio.", Math.round(csvPrices.sonos_amp + (2 * csvPrices.outdoor_speaker) + csvPrices.tv_labor)],
   ["commercialBasic", "Commercial Display Audio", "Basic audio support for a commercial display or conference room.", 1200],
   ["micPa", "Microphone + PA System", "Commercial microphone and PA system for presentations, meetings, or events.", 5000]
@@ -161,7 +223,6 @@ const audioOptionsData = [
 
     const requiredBase = [
   ["Premium HDMI / Low-Voltage Cabling", "CSV item add 16/4 + CAT6.", Math.round(csvPrices.hdmi)],
-  ["Power / Outlet Preparation", "CSV item AC Outlet.", Math.round(csvPrices.power)],
   ["Professional Installation Package", "Estimated 4 tech-hours at CSV labor rate.", Math.round(4 * csvPrices.labor)],
   ["System Calibration & Setup", "Estimated 2 programming/setup hours.", Math.round(2 * csvPrices.program)],
   ["Apple TV 4K Streaming Device If Needed", "Apple TV 128GB WiFi/Ethernet 4K.", Math.round(csvPrices.apple_tv)]
@@ -176,12 +237,15 @@ const addons = [
 ];
 
 const siteConditions = [
-  "Wires already run in the walls",
-  "No existing wiring",
-  "Unfinished utility closet nearby",
-  "Finished walls/ceiling may require extra labor",
-  "Outdoor or special location",
-  "Customer wants everything hidden"
+  { label: "Existing power outlet on wall", cost: 0, desc: "No outlet installation added." },
+  { label: "Need power outlet installed", cost: Math.round(csvPrices.power), desc: "Adds AC outlet preparation." },
+  { label: "Wires already run in the walls", cost: 0, desc: "Can reduce final labor after review." },
+  { label: "No existing wiring", cost: 0, desc: "May require additional labor after review." },
+  { label: "Accessible drop ceiling", cost: 0, desc: "Commercial-friendly access for wiring and service.", appliesTo: ["commercial"] },
+  { label: "Unfinished utility closet nearby", cost: 0, desc: "Can simplify equipment placement." },
+  { label: "Finished walls/ceiling may require extra labor", cost: 0, desc: "Final labor verified after site review." },
+  { label: "Outdoor or special location", cost: 0, desc: "May affect equipment and labor choices." },
+  { label: "Customer wants everything hidden", cost: 0, desc: "May affect labor and material needs." }
 ];
 
 /*********************************************************
@@ -231,6 +295,58 @@ function getSelectValue(id) {
 function getSelectLabel(id) {
   const element = document.getElementById(id);
   return element && element.selectedOptions[0] ? element.selectedOptions[0].textContent : "";
+}
+
+function getSelectedOption(group) {
+  const product = getProduct();
+  const config = getProductConfig();
+  const configKeyByGroup = {
+    brands: "brand",
+    sizes: "size",
+    types: "type",
+    resolutions: "resolution"
+  };
+  const configKey = configKeyByGroup[group] || group;
+  return product[group]?.[config[configKey]] || product[group]?.[0] || ["", 0];
+}
+
+function getIndoorTvTypeCode() {
+  return getSelectedOption("types")[1] || "LED";
+}
+
+function getIndoorTvSizeCode() {
+  return getSelectedOption("sizes")[1] || "55";
+}
+
+function getIndoorTvDisplayPrice() {
+  const typeCode = getIndoorTvTypeCode();
+  const sizeCode = getIndoorTvSizeCode();
+  return indoorTvPrices[typeCode]?.[sizeCode] || 0;
+}
+
+function getIndoorTvLaborPrice() {
+  const typeCode = getIndoorTvTypeCode();
+  const sizeCode = getIndoorTvSizeCode();
+  return indoorTvLabor[typeCode]?.[sizeCode] || csvPrices.tv_labor;
+}
+
+function getIndoorTvBracketPrice() {
+  return getIndoorTvSizeCode() === "98_100"
+    ? csvPrices.strong_sm_f_xl
+    : csvPrices.strong_sm_f_l;
+}
+
+function getSiteConditionsForProduct() {
+  return siteConditions
+    .map((condition, index) => ({ ...condition, index }))
+    .filter(condition => !condition.appliesTo || condition.appliesTo.includes(productType));
+}
+
+function getSiteSupportItems() {
+  return selectedSites
+    .map(index => siteConditions[index])
+    .filter(condition => condition && Number(condition.cost || 0) > 0)
+    .map(condition => [condition.label, condition.desc, Number(condition.cost || 0)]);
 }
 
 function getProductConfig() {
@@ -389,29 +505,36 @@ function renderDynamicProductConfig(product) {
   configTitle.textContent = `2. Configure ${product.name}`;
   configDescription.textContent = product.desc + " The choices below are specific to this product type.";
   const config = getProductConfig();
+  const optionLabel = (group, item) => {
+    if (product.id === "indoorTv" && (group === "sizes" || group === "types")) {
+      return item[0];
+    }
+
+    return `${item[0]}${Number(item[1]) ? " — " + money(item[1]) : ""}`;
+  };
 
   dynamicConfig.innerHTML = `
     <label>Brand / Model
       <select id="brandSelect" onchange="saveProductConfig('brand', this.selectedIndex)">
-        ${product.brands.map((item, index) => `<option value="${item[1]}" ${index === config.brand ? "selected" : ""}>${item[0]}${item[1] ? " — " + money(item[1]) : ""}</option>`).join("")}
+        ${product.brands.map((item, index) => `<option value="${item[1]}" ${index === config.brand ? "selected" : ""}>${optionLabel("brands", item)}</option>`).join("")}
       </select>
     </label>
 
     <label>Screen Size
       <select id="sizeSelect" onchange="saveProductConfig('size', this.selectedIndex)">
-        ${product.sizes.map((item, index) => `<option value="${item[1]}" ${index === config.size ? "selected" : ""}>${item[0]}${item[1] ? " — " + money(item[1]) : ""}</option>`).join("")}
+        ${product.sizes.map((item, index) => `<option value="${item[1]}" ${index === config.size ? "selected" : ""}>${optionLabel("sizes", item)}</option>`).join("")}
       </select>
     </label>
 
     <label>Screen Type
       <select id="typeSelect" onchange="saveProductConfig('type', this.selectedIndex)">
-        ${product.types.map((item, index) => `<option value="${item[1]}" ${index === config.type ? "selected" : ""}>${item[0]}${item[1] ? " — " + money(item[1]) : ""}</option>`).join("")}
+        ${product.types.map((item, index) => `<option value="${item[1]}" ${index === config.type ? "selected" : ""}>${optionLabel("types", item)}</option>`).join("")}
       </select>
     </label>
 
     <label>Resolution
       <select id="resolutionSelect" onchange="saveProductConfig('resolution', this.selectedIndex)">
-        ${product.resolutions.map((item, index) => `<option value="${item[1]}" ${index === config.resolution ? "selected" : ""}>${item[0]}${item[1] ? " — " + money(item[1]) : ""}</option>`).join("")}
+        ${product.resolutions.map((item, index) => `<option value="${item[1]}" ${index === config.resolution ? "selected" : ""}>${optionLabel("resolutions", item)}</option>`).join("")}
       </select>
     </label>
   `;
@@ -466,7 +589,16 @@ function renderAudioOptions() {
 }
 
     function getRequiredItems() {
-  const items = [...requiredBase];
+  if (productType === "indoorTv") {
+    return [
+      ["TV Bracket", `${getIndoorTvSizeCode() === "98_100" ? "SM-F-XL" : "SM-F-L"} Strong TV bracket.`, Math.round(getIndoorTvBracketPrice())],
+      ["TV Labor", "Basic single-TV installation labor.", Math.round(getIndoorTvLaborPrice())],
+      ["Trip Charge", "Single-visit trip charge.", Math.round(csvPrices.trip_charge)],
+      ...getSiteSupportItems()
+    ];
+  }
+
+  const items = [...requiredBase, ...getSiteSupportItems()];
 
   if (productType === "projector") {
     items.unshift(["Projector Mount", "Chief Mounts CHF4500 from uploaded item list.", Math.round(csvPrices.projector_mount)]);
@@ -487,10 +619,10 @@ function renderRequiredItems() {
 }
 
 function renderSiteOptions() {
-  siteOptions.innerHTML = siteConditions.map((condition, index) => `
-    <div class="option ${selectedSites.includes(index) ? "active" : ""}" onclick="toggleSite(${index})">
-      <strong>${condition}</strong>
-      <span>Helps estimate labor and prep needs.</span>
+  siteOptions.innerHTML = getSiteConditionsForProduct().map(condition => `
+    <div class="option ${selectedSites.includes(condition.index) ? "active" : ""}" onclick="toggleSite(${condition.index})">
+      <strong>${condition.label}</strong>
+      <span>${condition.desc}${condition.cost > 0 ? "<br>" + money(condition.cost) + " estimate" : ""}</span>
     </div>
   `).join("");
 }
@@ -524,11 +656,12 @@ function toggleSite(index) {
  * PRICING FUNCTIONS
  *********************************************************/
 function totals() {
-  const display =
-    getSelectValue("brandSelect") +
-    getSelectValue("sizeSelect") +
-    getSelectValue("typeSelect") +
-    getSelectValue("resolutionSelect");
+  const display = productType === "indoorTv"
+    ? getIndoorTvDisplayPrice()
+    : getSelectValue("brandSelect") +
+      getSelectValue("sizeSelect") +
+      getSelectValue("typeSelect") +
+      getSelectValue("resolutionSelect");
 
   const product = getProduct();
   const allowedAudioIds = product.audioAllowed || audioOptionsData.map(item => item[0]);
@@ -536,7 +669,7 @@ function totals() {
   const audio = (audioOptionsData.find(item => item[0] === validAudio) || audioOptionsData[0])[3];
   const support = getRequiredItems().reduce((sum, item) => sum + Number(item[2] || 0), 0);
   const add = selectedAddons.reduce((sum, index) => sum + Number(addons[index][1] || 0), 0);
-  const tax = (display + audio + support + add) * 0.07;
+  const tax = (display + audio + support + add) * taxRate;
 
   return {
     display,
@@ -587,7 +720,7 @@ function collectQuoteData() {
     screenType: getSelectLabel("typeSelect"),
     resolution: getSelectLabel("resolutionSelect"),
     audio: audio[1],
-    siteConditions: selectedSites.map(index => siteConditions[index]),
+    siteConditions: selectedSites.map(index => siteConditions[index]?.label).filter(Boolean),
     siteNotes: siteNotes.value,
     selectedAddons: selectedAddons.map(index => addons[index][0]),
     totals: currentTotals
